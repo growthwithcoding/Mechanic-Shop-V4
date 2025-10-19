@@ -1,0 +1,311 @@
+# Service Ticket Swagger Documentation
+# Due to the large number of routes (9), this file contains the YAML documentation
+# that needs to be added to each route in service_ticket/routes.py
+
+## CREATE SERVICE TICKET - POST /service_tickets
+"""
+Create a new service ticket
+---
+tags:
+  - Service Tickets
+summary: Create a service ticket
+description: Creates a new service ticket for a vehicle
+security:
+  - Bearer: []
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - vehicle_id
+        - customer_id
+        - description
+        - status
+      properties:
+        vehicle_id:
+          type: integer
+        customer_id:
+          type: integer
+        description:
+          type: string
+        status:
+          type: string
+          enum: [Open, In Progress, Completed, Closed]
+responses:
+  201:
+    description: Service ticket created
+  400:
+    description: Bad request
+  401:
+    description: Unauthorized
+"""
+
+## GET ALL SERVICE TICKETS - GET /service_tickets
+"""
+Get all service tickets
+---
+tags:
+  - Service Tickets
+summary: Get all service tickets
+description: Retrieves all service tickets
+security:
+  - Bearer: []
+responses:
+  200:
+    description: List of service tickets
+  401:
+    description: Unauthorized
+"""
+
+## GET ONE SERVICE TICKET - GET /service_tickets/<id>
+"""
+Get a service ticket
+---
+tags:
+  - Service Tickets
+summary: Get service ticket by ID
+description: Retrieves a specific service ticket
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: ticket_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: Service ticket retrieved
+  404:
+    description: Not found
+  401:
+    description: Unauthorized
+"""
+
+## ASSIGN MECHANIC - PUT /service_tickets/<ticket_id>/assign-mechanic/<mechanic_id>
+"""
+Assign mechanic to ticket
+---
+tags:
+  - Service Tickets
+summary: Assign a mechanic to a service ticket
+description: Creates a relationship between mechanic and ticket
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: ticket_id
+    type: integer
+    required: true
+  - in: path
+    name: mechanic_id
+    type: integer
+    required: true
+  - in: body
+    name: body
+    schema:
+      type: object
+      properties:
+        role:
+          type: string
+          default: Technician
+        minutes_worked:
+          type: integer
+          default: 0
+responses:
+  200:
+    description: Mechanic assigned successfully
+  400:
+    description: Mechanic already assigned
+  404:
+    description: Ticket or mechanic not found
+  401:
+    description: Unauthorized
+"""
+
+## REMOVE MECHANIC - PUT /service_tickets/<ticket_id>/remove-mechanic/<mechanic_id>
+"""
+Remove mechanic from ticket
+---
+tags:
+  - Service Tickets
+summary: Remove a mechanic from a service ticket
+description: Removes the mechanic assignment from a ticket
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: ticket_id
+    type: integer
+    required: true
+  - in: path
+    name: mechanic_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: Mechanic removed successfully
+  404:
+    description: Ticket, mechanic, or assignment not found
+  401:
+    description: Unauthorized
+"""
+
+## EDIT TICKET MECHANICS - PUT /service_tickets/<id>/edit
+"""
+Edit ticket mechanics
+---
+tags:
+  - Service Tickets
+summary: Bulk add/remove mechanics
+description: Add or remove multiple mechanics from a ticket
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: ticket_id
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        add_ids:
+          type: array
+          items:
+            type: integer
+        remove_ids:
+          type: array
+          items:
+            type: integer
+        role:
+          type: string
+          default: Technician
+        minutes_worked:
+          type: integer
+          default: 0
+responses:
+  200:
+    description: Mechanics updated
+  404:
+    description: Ticket not found
+  401:
+    description: Unauthorized
+"""
+
+## UPDATE SERVICE TICKET - PUT /service_tickets/<id>
+"""
+Update a service ticket
+---
+tags:
+  - Service Tickets
+summary: Update service ticket
+description: Updates service ticket information
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: ticket_id
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - vehicle_id
+        - customer_id
+        - description
+        - status
+      properties:
+        vehicle_id:
+          type: integer
+        customer_id:
+          type: integer
+        description:
+          type: string
+        status:
+          type: string
+responses:
+  200:
+    description: Ticket updated
+  404:
+    description: Not found
+  401:
+    description: Unauthorized
+"""
+
+## ADD PART TO TICKET - POST /service_tickets/<ticket_id>/parts/<part_id>
+"""
+Add part to ticket
+---
+tags:
+  - Service Tickets
+summary: Add a part to a service ticket
+description: Adds a part to the ticket and reduces inventory
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: ticket_id
+    type: integer
+    required: true
+  - in: path
+    name: part_id
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - quantity_used
+      properties:
+        quantity_used:
+          type: integer
+        markup_percentage:
+          type: number
+          default: 30.0
+        warranty_months:
+          type: integer
+        installed_by_mechanic_id:
+          type: integer
+responses:
+  200:
+    description: Part added successfully
+  400:
+    description: Insufficient stock or part already added
+  404:
+    description: Ticket or part not found
+  401:
+    description: Unauthorized
+"""
+
+## DELETE SERVICE TICKET - DELETE /service_tickets/<id>
+"""
+Delete a service ticket
+---
+tags:
+  - Service Tickets
+summary: Delete service ticket
+description: Deletes a service ticket from the system
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: ticket_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: Ticket deleted
+  404:
+    description: Not found
+  401:
+    description: Unauthorized
+"""

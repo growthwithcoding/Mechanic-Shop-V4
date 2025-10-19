@@ -1,0 +1,167 @@
+{
+  "customers": [
+    {
+      "first_name": "Alice",
+      "last_name": "Johnson",
+      "email": "alice.johnson@email.com",
+      "phone": "555-1001",
+      "address": "123 Main St",
+      "city": "Portland",
+      "state": "OR",
+      "postal_code": "97201",
+      "password": "password123"
+    },
+    {
+      "first_name": "Bob",
+      "last_name": "Smith",
+      "email": "bob.smith@email.com",
+      "phone": "555-1002",
+      "address": "456 Oak Ave",
+      "city": "Seattle",
+      "state": "WA",
+      "postal_code": "98101",
+      "password": "password123"
+    },
+    {
+      "first_name": "Carol",
+      "last_name": "Williams",
+      "email": "carol.williams@email.com",
+      "phone": "555-1003",
+      "address": "789 Pine Rd",
+      "city": "Denver",
+      "state": "CO",
+      "postal_code": "80201",
+      "password": "password123"
+    }
+  ],
+  "vehicles": [
+    {
+      "customer_index": 0,
+      "vin": "1HGCM82633A123456",
+      "make": "Honda",
+      "model": "Accord",
+      "year": 2020,
+      "color": "Silver"
+    },
+    {
+      "customer_index": 1,
+      "vin": "2T1BR32E25C123789",
+      "make": "Toyota",
+      "model": "Camry",
+      "year": 2019,
+      "color": "Blue"
+    },
+    {
+      "customer_index": 2,
+      "vin": "3FADP4EJ7EM123456",
+      "make": "Ford",
+      "model": "Focus",
+      "year": 2021,
+      "color": "Red"
+    }
+  ],
+  "mechanics": [
+    {
+      "full_name": "John Smith",
+      "email": "john.smith@shop.com",
+      "phone": "555-0101",
+      "salary": 65000,
+      "is_active": true
+    },
+    {
+      "full_name": "Sarah Johnson",
+      "email": "sarah.johnson@shop.com",
+      "phone": "555-0102",
+      "salary": 68000,
+      "is_active": true
+    },
+    {
+      "full_name": "Mike Wilson",
+      "email": "mike.wilson@shop.com",
+      "phone": "555-0103",
+      "salary": 62000,
+      "is_active": true
+    }
+  ],
+  "parts": [
+    {
+      "part_number": "OIL-001",
+      "name": "Engine Oil 5W-30",
+      "description": "Premium synthetic oil",
+      "category": "Fluids",
+      "manufacturer": "Castrol",
+      "current_cost_cents": 2500,
+      "quantity_in_stock": 50,
+      "reorder_level": 10,
+      "supplier": "AutoParts Inc"
+    },
+    {
+      "part_number": "FILTER-001",
+      "name": "Oil Filter",
+      "description": "Standard oil filter",
+      "category": "Filters",
+      "manufacturer": "Fram",
+      "current_cost_cents": 800,
+      "quantity_in_stock": 30,
+      "reorder_level": 5,
+      "supplier": "AutoParts Inc"
+    },
+    {
+      "part_number": "BRAKE-001",
+      "name": "Brake Pads",
+      "description": "Front brake pads",
+      "category": "Brakes",
+      "manufacturer": "Brembo",
+      "current_cost_cents": 4500,
+      "quantity_in_stock": 20,
+      "reorder_level": 4,
+      "supplier": "Brake Supply Co"
+    }
+  ],
+  "service_tickets": [
+    {
+      "vehicle_index": 0,
+      "customer_index": 0,
+      "status": "completed",
+      "days_ago_opened": 7,
+      "days_ago_closed": 6,
+      "problem_description": "Oil change needed",
+      "odometer_miles": 35000,
+      "priority": 2
+    },
+    {
+      "vehicle_index": 1,
+      "customer_index": 1,
+      "status": "in_progress",
+      "days_ago_opened": 2,
+      "problem_description": "Brake inspection",
+      "odometer_miles": 42000,
+      "priority": 1
+    }
+  ],
+  "ticket_mechanics": [
+    {
+      "ticket_index": 0,
+      "mechanic_index": 0,
+      "role": "Technician",
+      "minutes_worked": 30
+    },
+    {
+      "ticket_index": 1,
+      "mechanic_index": 1,
+      "role": "Lead Technician",
+      "minutes_worked": 45
+    }
+  ],
+  "ticket_parts": [
+    {
+      "ticket_index": 0,
+      "part_index": 0,
+      "quantity_used": 1,
+      "markup_percentage": 30.0,
+      "days_ago_installed": 6,
+      "warranty_months": 6,
+      "installed_by_mechanic_index": 0
+    }
+  ]
+}

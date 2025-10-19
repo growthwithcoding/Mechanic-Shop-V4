@@ -1,0 +1,928 @@
+{
+	"info": {
+		"_postman_id": "mechanic-shop-api-collection",
+		"name": "Mechanic Shop API - Complete Collection",
+		"description": "Complete API testing collection for Mechanic Shop with all CRUD operations. All DELETE operations are at the END to allow full testing before demonstrating delete functionality.",
+		"schema": "https://schema.getpostman.com/json/collection/v4.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register Customer 1 (John)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"jwt_token\", jsonData.access_token);",
+									"pm.environment.set(\"customer_id\", jsonData.customer.customer_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"phone\": \"555-1234\",\n  \"address\": \"123 Main St\",\n  \"city\": \"Denver\",\n  \"state\": \"CO\",\n  \"postal_code\": \"80202\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/auth/register",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["auth", "register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Customer 2 (Jane)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"jwt_token_2\", jsonData.access_token);",
+									"pm.environment.set(\"customer_id_2\", jsonData.customer.customer_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Smith\",\n  \"email\": \"jane.smith@example.com\",\n  \"password\": \"SecurePass456!\",\n  \"phone\": \"555-5678\",\n  \"address\": \"456 Oak Ave\",\n  \"city\": \"Boulder\",\n  \"state\": \"CO\",\n  \"postal_code\": \"80301\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/auth/register",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["auth", "register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Customer 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"jwt_token\", jsonData.access_token);",
+									"pm.environment.set(\"customer_id\", jsonData.customer.customer_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/auth/login",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["auth", "login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/auth/me",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["auth", "me"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Customers - Read & Update",
+			"item": [
+				{
+					"name": "Get All Customers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers?page=1&per_page=10",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers"],
+							"query": [
+								{"key": "page", "value": "1"},
+								{"key": "per_page", "value": "10"}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Customer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers/{{customer_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers", "{{customer_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"555-1234-UPDATED\",\n  \"address\": \"123 Main St\",\n  \"city\": \"Denver\",\n  \"state\": \"CO\",\n  \"postal_code\": \"80202\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers/{{customer_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers", "{{customer_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Vehicles - Create, Read, Update",
+			"item": [
+				{
+					"name": "Create Vehicle for Customer 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.vehicle_id) {",
+									"    pm.environment.set(\"vehicle_id\", jsonData.vehicle_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vin\": \"1HGCM82633A123456\",\n  \"make\": \"Honda\",\n  \"model\": \"Accord\",\n  \"year\": 2020,\n  \"color\": \"Silver\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers/{{customer_id}}/vehicles",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers", "{{customer_id}}", "vehicles"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Customer Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers/{{customer_id}}/vehicles",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers", "{{customer_id}}", "vehicles"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Vehicle",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers/{{customer_id}}/vehicles/{{vehicle_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers", "{{customer_id}}", "vehicles", "{{vehicle_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Vehicle",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vin\": \"1HGCM82633A123456\",\n  \"make\": \"Honda\",\n  \"model\": \"Accord EX\",\n  \"year\": 2020,\n  \"color\": \"Metallic Silver\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers/{{customer_id}}/vehicles/{{vehicle_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers", "{{customer_id}}", "vehicles", "{{vehicle_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Mechanics - Create, Read, Update",
+			"item": [
+				{
+					"name": "Create Mechanic 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.mechanic_id) {",
+									"    pm.environment.set(\"mechanic_id\", jsonData.mechanic_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Mike Johnson\",\n  \"email\": \"mike.johnson@mechanicshop.com\",\n  \"phone\": \"555-9876\",\n  \"salary\": 65000,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/mechanics",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["mechanics"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Mechanic 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.mechanic_id) {",
+									"    pm.environment.set(\"mechanic_id_2\", jsonData.mechanic_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Sarah Williams\",\n  \"email\": \"sarah.williams@mechanicshop.com\",\n  \"phone\": \"555-5432\",\n  \"salary\": 72000,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/mechanics",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["mechanics"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Mechanics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/mechanics",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["mechanics"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Mechanics by Activity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/mechanics/by-activity?order=desc&active_only=false",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["mechanics", "by-activity"],
+							"query": [
+								{
+									"key": "order",
+									"value": "desc",
+									"description": "Order: 'desc' (most active first) or 'asc' (least active first)"
+								},
+								{
+									"key": "active_only",
+									"value": "false",
+									"description": "Filter only active mechanics: 'true' or 'false'"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Mechanic",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/mechanics/{{mechanic_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["mechanics", "{{mechanic_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Mechanic",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Mike Johnson Sr.\",\n  \"email\": \"mike.johnson@mechanicshop.com\",\n  \"phone\": \"555-9876\",\n  \"salary\": 70000,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/mechanics/{{mechanic_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["mechanics", "{{mechanic_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Service Tickets - Create, Read, Update & Mechanic Assignment",
+			"item": [
+				{
+					"name": "Create Service Ticket",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.ticket_id) {",
+									"    pm.environment.set(\"ticket_id\", jsonData.ticket_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicle_id\": 1,\n  \"customer_id\": 1,\n  \"status\": \"open\",\n  \"problem_description\": \"Engine making strange noise and check engine light is on\",\n  \"odometer_miles\": 45000,\n  \"priority\": 3\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Second Service Ticket",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.ticket_id) {",
+									"    pm.environment.set(\"ticket_id_2\", jsonData.ticket_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicle_id\": 1,\n  \"customer_id\": 1,\n  \"status\": \"open\",\n  \"problem_description\": \"Brake pads need replacement\",\n  \"odometer_miles\": 45100,\n  \"priority\": 2\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Service Tickets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Service Ticket",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/{{ticket_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets", "{{ticket_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Mechanic to Ticket",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role\": \"Lead Technician\",\n  \"minutes_worked\": 0\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/{{ticket_id}}/assign-mechanic/{{mechanic_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets", "{{ticket_id}}", "assign-mechanic", "{{mechanic_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Second Mechanic to Ticket",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role\": \"Assistant Technician\",\n  \"minutes_worked\": 0\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/{{ticket_id}}/assign-mechanic/{{mechanic_id_2}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets", "{{ticket_id}}", "assign-mechanic", "{{mechanic_id_2}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Mechanic from Ticket",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/{{ticket_id}}/remove-mechanic/{{mechanic_id_2}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets", "{{ticket_id}}", "remove-mechanic", "{{mechanic_id_2}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk Edit Ticket Mechanics",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"add_ids\": [1, 2],\n  \"remove_ids\": [],\n  \"role\": \"Technician\",\n  \"minutes_worked\": 0\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/{{ticket_id}}/edit",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets", "{{ticket_id}}", "edit"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Service Ticket",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicle_id\": 1,\n  \"customer_id\": 1,\n  \"status\": \"in_progress\",\n  \"problem_description\": \"Engine making strange noise and check engine light is on - Diagnostic complete\",\n  \"odometer_miles\": 45000,\n  \"priority\": 3\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/{{ticket_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets", "{{ticket_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. DELETE Operations - Test at End",
+			"item": [
+				{
+					"name": "Get All Customers (Before Deletes)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers?page=1&per_page=10",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers"],
+							"query": [
+								{"key": "page", "value": "1"},
+								{"key": "per_page", "value": "10"}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Service Ticket",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/service_tickets/{{ticket_id_2}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["service_tickets", "{{ticket_id_2}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Vehicle",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers/{{customer_id}}/vehicles/{{vehicle_id}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers", "{{customer_id}}", "vehicles", "{{vehicle_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Mechanic",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/mechanics/{{mechanic_id_2}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["mechanics", "{{mechanic_id_2}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer 2 (Jane)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token_2}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers/{{customer_id_2}}",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers", "{{customer_id_2}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Customers (After Deletes)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/customers?page=1&per_page=10",
+							"protocol": "http",
+							"host": ["127", "0", "0", "1"],
+							"port": "5000",
+							"path": ["customers"],
+							"query": [
+								{"key": "page", "value": "1"},
+								{"key": "per_page", "value": "10"}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

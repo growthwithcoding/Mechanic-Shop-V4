@@ -1,0 +1,735 @@
+{
+	"info": {
+		"_postman_id": "mechanic-shop-v4-collection",
+		"name": "Mechanic Shop API V4 - Complete Testing Suite",
+		"description": "Comprehensive V4 API testing collection for continuous testing after V1 presentation.\n\n✨ V4 FEATURES:\n- Rate Limiting & Caching\n- JWT Token Authentication\n- Advanced Queries (Pagination, Sorting)\n- Inventory Management\n- Parts Integration\n- Bulk Operations\n\n🎯 ASSIGNMENT COVERAGE:\n✅ Full CRUD for Mechanics\n✅ Full CRUD for Service Tickets\n✅ Mechanic Assignment/Removal\n✅ All endpoints authenticated",
+		"schema": "https://schema.getpostman.com/json/collection/v4.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register Customer 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access_token) pm.environment.set(\"jwt_token\", jsonData.access_token);",
+									"if (jsonData.customer) pm.environment.set(\"customer_id\", jsonData.customer.customer_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"phone\": \"555-1234\",\n  \"address\": \"123 Main St\",\n  \"city\": \"Denver\",\n  \"state\": \"CO\",\n  \"postal_code\": \"80202\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						},
+						"description": "🆕 V4: Rate Limited (3/hour)"
+					}
+				},
+				{
+					"name": "Login Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access_token) pm.environment.set(\"jwt_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "🆕 V4: Rate Limited (5/min)"
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "me"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Customers (Paginated)",
+			"item": [
+				{
+					"name": "Get All Customers (Page 1)",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/customers?page=1&per_page=10",
+							"host": ["{{base_url}}"],
+							"path": ["customers"],
+							"query": [
+								{"key": "page", "value": "1"},
+								{"key": "per_page", "value": "10"}
+							]
+						},
+						"description": "🆕 V4: Pagination with metadata"
+					}
+				},
+				{
+					"name": "Get Single Customer",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/customers/{{customer_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["customers", "{{customer_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Customer",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"555-1234-UPDATED\",\n  \"address\": \"123 Main St\",\n  \"city\": \"Denver\",\n  \"state\": \"CO\",\n  \"postal_code\": \"80202\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customers/{{customer_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["customers", "{{customer_id}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Vehicles",
+			"item": [
+				{
+					"name": "Create Vehicle",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.vehicle_id) pm.environment.set(\"vehicle_id\", jsonData.vehicle_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vin\": \"1HGCM82633A123456\",\n  \"make\": \"Honda\",\n  \"model\": \"Accord\",\n  \"year\": 2020,\n  \"color\": \"Silver\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customers/{{customer_id}}/vehicles",
+							"host": ["{{base_url}}"],
+							"path": ["customers", "{{customer_id}}", "vehicles"]
+						}
+					}
+				},
+				{
+					"name": "Get Customer Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/customers/{{customer_id}}/vehicles",
+							"host": ["{{base_url}}"],
+							"path": ["customers", "{{customer_id}}", "vehicles"]
+						}
+					}
+				},
+				{
+					"name": "Update Vehicle",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vin\": \"1HGCM82633A123456\",\n  \"make\": \"Honda\",\n  \"model\": \"Accord EX-L\",\n  \"year\": 2020,\n  \"color\": \"Metallic Silver\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/customers/{{customer_id}}/vehicles/{{vehicle_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["customers", "{{customer_id}}", "vehicles", "{{vehicle_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Delete Vehicle",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/customers/{{customer_id}}/vehicles/{{vehicle_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["customers", "{{customer_id}}", "vehicles", "{{vehicle_id}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Mechanics - FULL CRUD",
+			"description": "✅ ASSIGNMENT: Complete CRUD + V4 Advanced Features",
+			"item": [
+				{
+					"name": "✅ CREATE Mechanic 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.mechanic_id) pm.environment.set(\"mechanic_id\", jsonData.mechanic_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Mike Johnson\",\n  \"email\": \"mike.johnson@mechanicshop.com\",\n  \"phone\": \"555-9876\",\n  \"salary\": 65000,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mechanics",
+							"host": ["{{base_url}}"],
+							"path": ["mechanics"]
+						},
+						"description": "✅ ASSIGNMENT: POST /"
+					}
+				},
+				{
+					"name": "✅ CREATE Mechanic 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.mechanic_id) pm.environment.set(\"mechanic_id_2\", jsonData.mechanic_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Sarah Williams\",\n  \"email\": \"sarah.williams@mechanicshop.com\",\n  \"phone\": \"555-5432\",\n  \"salary\": 72000,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mechanics",
+							"host": ["{{base_url}}"],
+							"path": ["mechanics"]
+						}
+					}
+				},
+				{
+					"name": "✅ CREATE Mechanic 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.mechanic_id) pm.environment.set(\"mechanic_id_3\", jsonData.mechanic_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Tom Davis\",\n  \"email\": \"tom.davis@mechanicshop.com\",\n  \"phone\": \"555-3333\",\n  \"salary\": 58000,\n  \"is_active\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mechanics",
+							"host": ["{{base_url}}"],
+							"path": ["mechanics"]
+						}
+					}
+				},
+				{
+					"name": "✅ GET All Mechanics (CACHED)",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/mechanics",
+							"host": ["{{base_url}}"],
+							"path": ["mechanics"]
+						},
+						"description": "✅ ASSIGNMENT: GET /\n🆕 V4: Cached 5 min"
+					}
+				},
+				{
+					"name": "✅ GET Single Mechanic",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/mechanics/{{mechanic_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["mechanics", "{{mechanic_id}}"]
+						},
+						"description": "✅ ASSIGNMENT: GET /<int:id>"
+					}
+				},
+				{
+					"name": "🆕 GET Mechanics by Activity",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/mechanics/by-activity?order=desc&active_only=false",
+							"host": ["{{base_url}}"],
+							"path": ["mechanics", "by-activity"],
+							"query": [
+								{"key": "order", "value": "desc"},
+								{"key": "active_only", "value": "false"}
+							]
+						},
+						"description": "🆕 V4 ADVANCED: Sort by ticket count"
+					}
+				},
+				{
+					"name": "✅ UPDATE Mechanic",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Mike Johnson Sr.\",\n  \"email\": \"mike.johnson@mechanicshop.com\",\n  \"phone\": \"555-9876\",\n  \"salary\": 70000,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mechanics/{{mechanic_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["mechanics", "{{mechanic_id}}"]
+						},
+						"description": "✅ ASSIGNMENT: PUT /<int:id>"
+					}
+				},
+				{
+					"name": "✅ DELETE Mechanic",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/mechanics/{{mechanic_id_3}}",
+							"host": ["{{base_url}}"],
+							"path": ["mechanics", "{{mechanic_id_3}}"]
+						},
+						"description": "✅ ASSIGNMENT: DELETE /<int:id>"
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Service Tickets - FULL CRUD",
+			"description": "✅ ASSIGNMENT: Complete CRUD + Mechanic Assignment",
+			"item": [
+				{
+					"name": "✅ CREATE Service Ticket 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.ticket_id) pm.environment.set(\"ticket_id\", jsonData.ticket_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicle_id\": 1,\n  \"customer_id\": 1,\n  \"status\": \"open\",\n  \"problem_description\": \"Engine making strange noise and check engine light on\",\n  \"odometer_miles\": 45000,\n  \"priority\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/service_tickets",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets"]
+						},
+						"description": "✅ ASSIGNMENT: POST /"
+					}
+				},
+				{
+					"name": "✅ CREATE Service Ticket 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.ticket_id) pm.environment.set(\"ticket_id_2\", jsonData.ticket_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicle_id\": 1,\n  \"customer_id\": 1,\n  \"status\": \"open\",\n  \"problem_description\": \"Brake pads need replacement\",\n  \"odometer_miles\": 45100,\n  \"priority\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/service_tickets",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets"]
+						}
+					}
+				},
+				{
+					"name": "✅ GET All Service Tickets",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/service_tickets",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets"]
+						},
+						"description": "✅ ASSIGNMENT: GET /"
+					}
+				},
+				{
+					"name": "✅ GET Single Ticket",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/service_tickets/{{ticket_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets", "{{ticket_id}}"]
+						}
+					}
+				},
+				{
+					"name": "✅ ASSIGN Mechanic to Ticket",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role\": \"Lead Technician\",\n  \"minutes_worked\": 0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/service_tickets/{{ticket_id}}/assign-mechanic/{{mechanic_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets", "{{ticket_id}}", "assign-mechanic", "{{mechanic_id}}"]
+						},
+						"description": "✅ ASSIGNMENT: PUT /<ticket_id>/assign-mechanic/<mechanic_id>"
+					}
+				},
+				{
+					"name": "✅ ASSIGN Second Mechanic",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role\": \"Assistant Technician\",\n  \"minutes_worked\": 0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/service_tickets/{{ticket_id}}/assign-mechanic/{{mechanic_id_2}}",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets", "{{ticket_id}}", "assign-mechanic", "{{mechanic_id_2}}"]
+						}
+					}
+				},
+				{
+					"name": "✅ REMOVE Mechanic from Ticket",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/service_tickets/{{ticket_id}}/remove-mechanic/{{mechanic_id_2}}",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets", "{{ticket_id}}", "remove-mechanic", "{{mechanic_id_2}}"]
+						},
+						"description": "✅ ASSIGNMENT: PUT /<ticket_id>/remove-mechanic/<mechanic_id>"
+					}
+				},
+				{
+					"name": "🆕 BULK EDIT Mechanics",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"add_ids\": [1, 2],\n  \"remove_ids\": [],\n  \"role\": \"Technician\",\n  \"minutes_worked\": 0\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/service_tickets/{{ticket_id}}/edit",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets", "{{ticket_id}}", "edit"]
+						},
+						"description": "🆕 V4 ADVANCED: Bulk add/remove"
+					}
+				},
+				{
+					"name": "✅ UPDATE Service Ticket",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicle_id\": 1,\n  \"customer_id\": 1,\n  \"status\": \"in_progress\",\n  \"problem_description\": \"Engine noise - Diagnostic complete\",\n  \"odometer_miles\": 45000,\n  \"priority\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/service_tickets/{{ticket_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets", "{{ticket_id}}"]
+						},
+						"description": "✅ ASSIGNMENT: PUT /<int:id>"
+					}
+				},
+				{
+					"name": "✅ DELETE Service Ticket",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/service_tickets/{{ticket_id_2}}",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets", "{{ticket_id_2}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Inventory - Parts",
+			"description": "🆕 V4 FEATURE: Inventory Management",
+			"item": [
+				{
+					"name": "CREATE Part (Brake Pads)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.part_id) pm.environment.set(\"part_id\", jsonData.part_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"part_number\": \"BRK-001\",\n  \"name\": \"Brake Pad Set\",\n  \"description\": \"Premium ceramic brake pads\",\n  \"category\": \"Brakes\",\n  \"manufacturer\": \"AutoParts Inc\",\n  \"current_cost_cents\": 4500,\n  \"quantity_in_stock\": 25,\n  \"reorder_level\": 5,\n  \"supplier\": \"Parts Warehouse\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory",
+							"host": ["{{base_url}}"],
+							"path": ["inventory"]
+						}
+					}
+				},
+				{
+					"name": "GET All Parts",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/inventory",
+							"host": ["{{base_url}}"],
+							"path": ["inventory"]
+						}
+					}
+				},
+				{
+					"name": "GET Low Stock Parts",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/inventory?low_stock=true",
+							"host": ["{{base_url}}"],
+							"path": ["inventory"],
+							"query": [{"key": "low_stock", "value": "true"}]
+						}
+					}
+				},
+				{
+					"name": "GET Single Part",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/inventory/{{part_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["inventory", "{{part_id}}"]
+						}
+					}
+				},
+				{
+					"name": "UPDATE Part",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"part_number\": \"BRK-001\",\n  \"name\": \"Brake Pad Set - Premium\",\n  \"description\": \"Premium ceramic brake pads\",\n  \"category\": \"Brakes\",\n  \"manufacturer\": \"AutoParts Inc\",\n  \"current_cost_cents\": 4800,\n  \"quantity_in_stock\": 25,\n  \"reorder_level\": 5,\n  \"supplier\": \"Parts Warehouse\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory/{{part_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["inventory", "{{part_id}}"]
+						}
+					}
+				},
+				{
+					"name": "ADJUST Part Quantity",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"adjustment\": 10\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory/{{part_id}}/adjust-quantity",
+							"host": ["{{base_url}}"],
+							"path": ["inventory", "{{part_id}}", "adjust-quantity"]
+						}
+					}
+				},
+				{
+					"name": "ADD Part to Ticket",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{jwt_token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quantity_used\": 1,\n  \"markup_percentage\": 30.0,\n  \"warranty_months\": 12,\n  \"installed_by_mechanic_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/service_tickets/{{ticket_id}}/parts/{{part_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["service_tickets", "{{ticket_id}}", "parts", "{{part_id}}"]
+						}
+					}
+				},
+				{
+					"name": "DELETE Part",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{jwt_token}}"}],
+						"url": {
+							"raw": "{{base_url}}/inventory/{{part_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["inventory", "{{part_id}}"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

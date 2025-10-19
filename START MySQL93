@@ -1,0 +1,8 @@
+# Enable the service (Manual start)
+Set-Service -Name "MySQL93" -StartupType Manual
+
+# Now start it
+Start-Service -Name "MySQL93"
+
+# Verify
+Get-Service "MySQL93" | Select-Object Status, StartType, DisplayName

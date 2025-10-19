@@ -1,0 +1,366 @@
+# Customer Routes Swagger Documentation
+# This file contains the YAML documentation that needs to be added to customer/routes.py
+
+## GET ALL CUSTOMERS - GET /customers
+"""
+Get all customers
+---
+tags:
+  - Customers
+summary: Get all customers with pagination
+description: Retrieves paginated list of customers
+security:
+  - Bearer: []
+parameters:
+  - in: query
+    name: page
+    type: integer
+    default: 1
+    description: Page number
+  - in: query
+    name: per_page
+    type: integer
+    default: 10
+    description: Results per page (max 100)
+responses:
+  200:
+    description: Paginated customer list
+    schema:
+      type: object
+      properties:
+        customers:
+          type: array
+        pagination:
+          type: object
+  400:
+    description: Invalid pagination parameters
+  401:
+    description: Unauthorized
+"""
+
+## GET ONE CUSTOMER - GET /customers/<id>
+"""
+Get a customer
+---
+tags:
+  - Customers
+summary: Get customer by ID
+description: Retrieves a specific customer's information
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: customer_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: Customer retrieved
+  404:
+    description: Customer not found
+  401:
+    description: Unauthorized
+"""
+
+## UPDATE CUSTOMER - PUT /customers/<id>
+"""
+Update a customer
+---
+tags:
+  - Customers
+summary: Update customer information
+description: Updates customer information (users can only update their own account)
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: customer_id
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - email
+        - phone
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+responses:
+  200:
+    description: Customer updated
+  403:
+    description: Unauthorized to update this customer
+  404:
+    description: Customer not found
+  401:
+    description: Unauthorized
+"""
+
+## DELETE CUSTOMER - DELETE /customers/<id>
+"""
+Delete a customer
+---
+tags:
+  - Customers
+summary: Delete customer account
+description: Deletes customer account (users can only delete their own account)
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: customer_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: Customer deleted
+  403:
+    description: Unauthorized to delete this customer
+  404:
+    description: Customer not found
+  401:
+    description: Unauthorized
+"""
+
+## CREATE VEHICLE - POST /customers/<id>/vehicles
+"""
+Create a vehicle
+---
+tags:
+  - Customers
+summary: Create a vehicle for customer
+description: Creates a new vehicle for the specified customer
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: customer_id
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - vin
+        - make
+        - model
+        - year
+      properties:
+        vin:
+          type: string
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+        color:
+          type: string
+        mileage:
+          type: integer
+responses:
+  201:
+    description: Vehicle created
+  400:
+    description: VIN already exists
+  403:
+    description: Unauthorized
+  404:
+    description: Customer not found
+  401:
+    description: Unauthorized
+"""
+
+## GET CUSTOMER VEHICLES - GET /customers/<id>/vehicles
+"""
+Get customer vehicles
+---
+tags:
+  - Customers
+summary: Get all vehicles for a customer
+description: Retrieves all vehicles owned by the customer
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: customer_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: List of vehicles
+  404:
+    description: Customer not found
+  401:
+    description: Unauthorized
+"""
+
+## GET ONE VEHICLE - GET /customers/<id>/vehicles/<vehicle_id>
+"""
+Get a vehicle
+---
+tags:
+  - Customers
+summary: Get vehicle by ID
+description: Retrieves a specific vehicle
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: customer_id
+    type: integer
+    required: true
+  - in: path
+    name: vehicle_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: Vehicle retrieved
+  400:
+    description: Vehicle does not belong to this customer
+  404:
+    description: Vehicle not found
+  401:
+    description: Unauthorized
+"""
+
+## UPDATE VEHICLE - PUT /customers/<id>/vehicles/<vehicle_id>
+"""
+Update a vehicle
+---
+tags:
+  - Customers
+summary: Update vehicle information
+description: Updates vehicle information (users can only update their own vehicles)
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: customer_id
+    type: integer
+    required: true
+  - in: path
+    name: vehicle_id
+    type: integer
+    required: true
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - vin
+        - make
+        - model
+        - year
+      properties:
+        vin:
+          type: string
+        make:
+          type: string
+        model:
+          type: string
+        year:
+          type: integer
+        color:
+          type: string
+        mileage:
+          type: integer
+responses:
+  200:
+    description: Vehicle updated
+  400:
+    description: VIN already exists or vehicle doesn't belong to customer
+  403:
+    description: Unauthorized
+  404:
+    description: Vehicle not found
+  401:
+    description: Unauthorized
+"""
+
+## DELETE VEHICLE - DELETE /customers/<id>/vehicles/<vehicle_id>
+"""
+Delete a vehicle
+---
+tags:
+  - Customers
+summary: Delete a vehicle
+description: Deletes a vehicle (users can only delete their own vehicles)
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: customer_id
+    type: integer
+    required: true
+  - in: path
+    name: vehicle_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: Vehicle deleted
+  400:
+    description: Vehicle does not belong to this customer
+  403:
+    description: Unauthorized
+  404:
+    description: Vehicle not found
+  401:
+    description: Unauthorized
+"""
+
+## CREATE CUSTOMER (DEPRECATED) - POST /customers
+"""
+Create a customer (DEPRECATED)
+---
+tags:
+  - Customers
+summary: Create a customer (deprecated - use /auth/register instead)
+description: Creates a new customer (deprecated in favor of /auth/register)
+security:
+  - Bearer: []
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - email
+        - phone
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+responses:
+  201:
+    description: Customer created
+  400:
+    description: Email already exists
+  401:
+    description: Unauthorized
+deprecated: true
+"""
